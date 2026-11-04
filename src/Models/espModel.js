@@ -19,6 +19,11 @@ async function buscarPorToken(token) {
   return r.rows[0] || null;
 }
 
+async function buscarPorCodigo(codigo) {
+  const r = await db.query(`SELECT ${COLUNAS} FROM esps WHERE codigo_auth = $1`, [codigo]);
+  return r.rows[0] || null;
+}
+
 async function buscarPorMac(mac) {
   const r = await db.query(`SELECT ${COLUNAS} FROM esps WHERE mac = $1`, [mac]);
   return r.rows[0] || null;
@@ -40,4 +45,4 @@ async function registrarLeitura(espId, tempoLeitura, temperatura, humidade) {
   return r.rows[0];
 }
 
-module.exports = { criar, buscarPorToken, buscarPorMac, registrarLeitura };
+module.exports = { criar, buscarPorToken, buscarPorMac, registrarLeitura, buscarPorCodigo};

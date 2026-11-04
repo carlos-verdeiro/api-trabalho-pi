@@ -48,14 +48,14 @@ const meus = asyncHandler(async (req, res) => {
   });
 });
 
-// POST /mobile/vincular   body: { token_esp }
+// POST /mobile/vincular   body: { codigo_auth }
 const vincular = asyncHandler(async (req, res) => {
-  const { token_esp: tokenEsp } = req.body || {};
-  if (typeof tokenEsp !== 'string' || tokenEsp.trim() === '') {
-    throw new ErroApi(400, 'VALIDATION_ERROR', 'Campos obrigatórios ausentes ou inválidos', ['token_esp é obrigatório']);
+  const { codigo_auth: codigo } = req.body || {};
+  if (typeof codigo !== 'string' || codigo.trim() === '') {
+    throw new ErroApi(400, 'VALIDATION_ERROR', 'Campos obrigatórios ausentes ou inválidos', ['codigo_auth é obrigatório']);
   }
 
-  const esp = await espModel.buscarPorToken(tokenEsp.trim());
+  const esp = await espModel.buscarPorCodigo(codigo.trim());
   if (!esp) throw new ErroApi(404, 'DEVICE_NOT_FOUND', 'Dispositivo não encontrado');
 
   await mobileModel.vincular(req.mobile.id, esp.id);
