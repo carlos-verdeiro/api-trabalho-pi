@@ -39,6 +39,7 @@ const registrar = asyncHandler(async (req, res) => {
         latitude: esp.latitude,
         longitude: esp.longitude,
         token_esp: esp.token_esp,
+        codigo_auth: esp.codigo_auth,
         inserido: iso(esp.inserido),
       },
     });
@@ -49,6 +50,7 @@ const registrar = asyncHandler(async (req, res) => {
       latitude,
       longitude,
       token_esp: crypto.randomBytes(32).toString('hex'),
+      codigo_auth: crypto.randomBytes(2).toString('hex').toUpperCase(),
     });
 
     res.status(201).json({
@@ -60,6 +62,7 @@ const registrar = asyncHandler(async (req, res) => {
         latitude: esp.latitude,
         longitude: esp.longitude,
         token_esp: esp.token_esp,
+        codigo_auth: esp.codigo_auth,
         inserido: iso(esp.inserido),
       },
     });

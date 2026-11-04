@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS esps (
   latitude      DOUBLE PRECISION NOT NULL CHECK (latitude  BETWEEN -90  AND 90),
   longitude     DOUBLE PRECISION NOT NULL CHECK (longitude BETWEEN -180 AND 180),
   token_esp     VARCHAR(128) NOT NULL UNIQUE,
+  codigo_auth   VARCHAR(4) NOT NULL,
   inserido      TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
   ultimo_envio  TIMESTAMPTZ
 );

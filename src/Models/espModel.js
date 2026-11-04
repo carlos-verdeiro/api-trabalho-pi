@@ -1,15 +1,15 @@
 const db = require('../db');
 
-const COLUNAS = 'id, mac, nome, latitude, longitude, token_esp, inserido, ultimo_envio';
+const COLUNAS = 'id, mac, nome, latitude, longitude, token_esp, inserido, ultimo_envio, codigo_auth';
 
 // Retorna o ESP criado, ou null se o MAC já estava registrado
-async function criar({ mac, nome, latitude, longitude, token_esp }) {
+async function criar({ mac, nome, latitude, longitude, token_esp, codigo_auth}) {
   const r = await db.query(
-    `INSERT INTO esps (mac, nome, latitude, longitude, token_esp)
-     VALUES ($1, $2, $3, $4, $5)
+    `INSERT INTO esps (mac, nome, latitude, longitude, token_esp, codigo_auth)
+     VALUES ($1, $2, $3, $4, $5, $6)
      ON CONFLICT (mac) DO NOTHING
      RETURNING ${COLUNAS}`,
-    [mac, nome, latitude, longitude, token_esp],
+    [mac, nome, latitude, longitude, token_esp, codigo_auth],
   );
   return r.rows[0] || null;
 }
