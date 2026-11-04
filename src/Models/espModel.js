@@ -19,6 +19,11 @@ async function buscarPorToken(token) {
   return r.rows[0] || null;
 }
 
+async function buscarPorMac(mac) {
+  const r = await db.query(`SELECT ${COLUNAS} FROM esps WHERE mac = $1`, [mac]);
+  return r.rows[0] || null;
+}
+
 // Grava a leitura e atualiza o ultimo_envio do ESP na mesma instrução (atômico)
 async function registrarLeitura(espId, tempoLeitura, temperatura, humidade) {
   const r = await db.query(
@@ -35,4 +40,4 @@ async function registrarLeitura(espId, tempoLeitura, temperatura, humidade) {
   return r.rows[0];
 }
 
-module.exports = { criar, buscarPorToken, registrarLeitura };
+module.exports = { criar, buscarPorToken, buscarPorMac, registrarLeitura };

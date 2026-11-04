@@ -28,29 +28,42 @@ const registrar = asyncHandler(async (req, res) => {
     throw new ErroApi(400, 'VALIDATION_ERROR', 'Campos obrigatórios ausentes ou inválidos', detalhes);
   }
 
-  const esp = await espModel.criar({
-    mac: mac.trim(),
-    nome: nome ? nome.trim() : null,
-    latitude,
-    longitude,
-    token_esp: crypto.randomBytes(32).toString('hex'),
-  });
-  if (!esp) {
-    throw new ErroApi(409, 'DEVICE_ALREADY_EXISTS', 'Um dispositivo com este ID já está registrado');
-  }
+  let esp = await espModel.buscarPorMac(mac);
+  if(esp){
+    res.status(201).json({
+      sucesso: true,
+      mensagem: 'Dispositivo já cadastrado',
+      dados: {
+        mac: esp.mac,
+        nome: esp.nome,
+        latitude: esp.latitude,
+        longitude: esp.longitude,
+        token_esp: esp.token_esp,
+        inserido: iso(esp.inserido),
+      },
+    });
+  }else{
+    esp = await espModel.criar({
+      mac: mac.trim(),
+      nome: nome ? nome.trim() : null,
+      latitude,
+      longitude,
+      token_esp: crypto.randomBytes(32).toString('hex'),
+    });
 
-  res.status(201).json({
-    sucesso: true,
-    mensagem: 'Dispositivo registrado com sucesso',
-    dados: {
-      mac: esp.mac,
-      nome: esp.nome,
-      latitude: esp.latitude,
-      longitude: esp.longitude,
-      token_esp: esp.token_esp,
-      inserido: iso(esp.inserido),
-    },
-  });
+    res.status(201).json({
+      sucesso: true,
+      mensagem: 'Dispositivo criado com sucesso',
+      dados: {
+        mac: esp.mac,
+        nome: esp.nome,
+        latitude: esp.latitude,
+        longitude: esp.longitude,
+        token_esp: esp.token_esp,
+        inserido: iso(esp.inserido),
+      },
+    });
+  }
 });
 
 // POST /esp32/leitura   (req.esp vem do middleware autenticarEsp)
