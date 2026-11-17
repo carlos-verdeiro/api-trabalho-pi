@@ -30,17 +30,20 @@ async function buscarPorMac(mac) {
 }
 
 // Grava a leitura e atualiza o ultimo_envio do ESP na mesma instrução (atômico)
-async function registrarLeitura(espId, tempoLeitura, temperatura, humidade) {
+async function registrarLeitura(espId, tempoLeitura, leituras) {
+  const {
+    temperatura, humidade, pm25, pm10, mq135,
+  } = leituras;
   const r = await db.query(
     `WITH nova AS (
-       INSERT INTO leituras (esp_id, tempo_leitura, temperatura, humidade)
-       VALUES ($1, $2, $3, $4)
-       RETURNING id, tempo_leitura, temperatura, humidade
+       INSERT INTO leituras (esp_id, tempo_leitura, temperatura, humidade, pm25, pm10, mq135)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       RETURNING id, tempo_leitura, temperatura, humidade, pm25, pm10, mq135
      ), atualiza AS (
        UPDATE esps SET ultimo_envio = NOW() WHERE id = $1
      )
      SELECT * FROM nova`,
-    [espId, tempoLeitura, temperatura, humidade],
+    [espId, tempoLeitura, temperatura, humidade, pm25, pm10, mq135],
   );
   return r.rows[0];
 }

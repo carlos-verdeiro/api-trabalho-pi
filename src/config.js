@@ -8,9 +8,16 @@ const inteiroPositivo = (valor, padrao) => {
 
 module.exports = {
   // Sensores aceitos nas leituras (e em ?tipo_leitura=)
-  SENSORES: ['temperatura', 'humidade'],
+  // (os nomes são iguais às colunas da tabela leituras)
+  SENSORES: ['temperatura', 'humidade', 'pm25', 'pm10', 'mq135'],
   // Faixa aceita para cada sensor [min, max]
-  LIMITES_SENSOR: { temperatura: [-50, 100], humidade: [0, 100] },
+  LIMITES_SENSOR: {
+    temperatura: [-50, 100], // °C
+    humidade: [0, 100], // %
+    pm25: [0, 1000], // µg/m³
+    pm10: [0, 1000], // µg/m³
+    mq135: [0, 10000], // mesma unidade que o ESP enviar (ppm ou valor bruto do ADC)
+  },
 
   LIMITE_PADRAO: 50,
   LIMITE_MAXIMO: 200,

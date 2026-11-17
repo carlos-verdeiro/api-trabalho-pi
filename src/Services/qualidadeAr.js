@@ -1,9 +1,9 @@
 // Cálculo do índice de qualidade do ar usado no mapa de calor.
 //
-// ATENÇÃO: a documentação não define a fórmula, e os sensores atuais só medem
-// temperatura e umidade. O cálculo abaixo é um PLACEHOLDER (quanto mais fora da
-// faixa ideal, pior o índice). Para usar a fórmula oficial do projeto, altere
-// apenas a função calcularIndice() — o resto da API não precisa mudar.
+// EM ABERTO: a fórmula ainda não foi definida. Enquanto isso, calcularIndice()
+// devolve null e o mapa responde indice_qualidade: null e categoria: null.
+// Quando a fórmula existir, altere apenas calcularIndice() — o resto da API
+// (Controller, Model, banco) já entrega as médias de todos os sensores.
 
 const LEGENDA = [
   { categoria: 'Boa', min: 0, max: 50, cor: '#00E400' },
@@ -14,22 +14,12 @@ const LEGENDA = [
   { categoria: 'Perigosa', min: 301, max: 500, cor: '#7E0023' },
 ];
 
-const TEMPERATURA_IDEAL = [18, 26]; // °C
-const HUMIDADE_IDEAL = [40, 60]; // %
-const PESO_TEMPERATURA = 10;
-const PESO_HUMIDADE = 3;
-
-function desvio(valor, [min, max]) {
-  if (valor < min) return min - valor;
-  if (valor > max) return valor - max;
-  return 0;
-}
-
-// medias: { temperatura, humidade }  ->  inteiro de 0 a 500
+// medias: { temperatura, humidade, pm25, pm10, mq135 }  (valores podem ser null)
+// retorno esperado quando implementada: inteiro de 0 a 500
+// eslint-disable-next-line no-unused-vars
 function calcularIndice(medias) {
-  const pontos = desvio(medias.temperatura, TEMPERATURA_IDEAL) * PESO_TEMPERATURA
-    + desvio(medias.humidade, HUMIDADE_IDEAL) * PESO_HUMIDADE;
-  return Math.min(500, Math.round(pontos));
+  // TODO: implementar o cálculo da qualidade do ar (pm25, pm10 e mq135 são os candidatos)
+  return null;
 }
 
 function categoriaDoIndice(indice) {

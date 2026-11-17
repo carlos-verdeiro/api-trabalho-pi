@@ -107,12 +107,7 @@ const enviarLeitura = asyncHandler(async (req, res) => {
     throw new ErroApi(400, 'VALIDATION_ERROR', 'Dados inválidos ou leituras vazio', detalhes);
   }
 
-  const leitura = await espModel.registrarLeitura(
-    req.esp.id,
-    tempo,
-    leituras.temperatura,
-    leituras.humidade,
-  );
+  const leitura = await espModel.registrarLeitura(req.esp.id, tempo, leituras);
 
   res.status(201).json({
     sucesso: true,
@@ -121,10 +116,7 @@ const enviarLeitura = asyncHandler(async (req, res) => {
       id_leitura: leitura.id,
       token_esp: req.esp.token_esp,
       tempo_leitura: iso(leitura.tempo_leitura),
-      leituras: {
-        temperatura: leitura.temperatura,
-        humidade: leitura.humidade,
-      },
+      leituras: Object.fromEntries(SENSORES.map((sensor) => [sensor, leitura[sensor]])),
     },
   });
 });

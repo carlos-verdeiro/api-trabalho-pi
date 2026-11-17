@@ -8,7 +8,7 @@ const {
   iso, arredondar, formatarLeitura, montarPaginacao,
 } = require('../Utils/formatacao');
 const { calcularIndice, categoriaDoIndice, LEGENDA } = require('../Services/qualidadeAr');
-const { MAPA_JANELA_MINUTOS, MAPA_PRECISAO_DECIMAIS } = require('../config');
+const { SENSORES, MAPA_JANELA_MINUTOS, MAPA_PRECISAO_DECIMAIS } = require('../config');
 
 // Lê e valida todos os filtros de listagem da query string
 function lerFiltros(query) {
@@ -106,19 +106,19 @@ const mapa = asyncHandler(async (req, res) => {
   });
 
   const pontos = localidades.map((loc) => {
-    const indice = calcularIndice({ temperatura: loc.temperatura, humidade: loc.humidade });
+    const mediasBrutas = Object.fromEntries(SENSORES.map((sensor) => [sensor, loc[sensor]]));
+    const indice = calcularIndice(mediasBrutas);
     return {
       latitude: arredondar(loc.latitude, 6),
       longitude: arredondar(loc.longitude, 6),
       indice_qualidade: indice,
-      categoria: categoriaDoIndice(indice).categoria,
+      categoria: indice === null ? null : categoriaDoIndice(indice).categoria,
       total_leituras: loc.total_leituras,
       total_dispositivos: loc.total_dispositivos,
       ultima_leitura: iso(loc.ultima_leitura),
-      medias: {
-        temperatura: arredondar(loc.temperatura, 1),
-        humidade: arredondar(loc.humidade, 1),
-      },
+      medias: Object.fromEntries(
+        SENSORES.map((sensor) => [sensor, arredondar(loc[sensor], 1)]),
+      ),
     };
   });
 
